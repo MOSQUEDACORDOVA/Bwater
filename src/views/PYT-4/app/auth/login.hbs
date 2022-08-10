@@ -1,0 +1,60 @@
+<div class="app-content content py4" style="transition:none">
+    <div class="content-overlay"></div>
+    <div class="auth-wrapper auth-v2">
+        <div class="auth-inner row m-0">
+            <div class="d-flex col-lg-4 align-items-center auth-bg px-2">
+                <div class="col-12 col-sm-8 col-md-6 col-lg-12 mx-auto">
+                    <img
+                                        src="../../../dataPY4/images/logo-gota.png" class="img-fluid mx-auto d-block" style="max-height: 12rem;"/>
+                                <img
+                                    src="../../../dataPY4/images/logo-azul-.png"
+                                    class="img-fluid mx-auto d-block" style="max-height: 130px;" />
+                    <form class="auth-login-form" action="/loginpyt4" method="POST"
+                        novalidate="novalidate">
+                        <div class="none">
+                            <input class="form-control" id="register-username" type="text" name="proyect"
+                                placeholder="johndoe" aria-describedby="register-username" value="PYT4"
+                                tabindex="1" hidden />
+                        </div>
+                        <div class="mb-1">
+                            <label class="form-label" for="login-email">Email</label>
+                            <input class="form-control" id="login-email" type="text" name="email"
+                                placeholder="john@example.com" aria-describedby="login-email" autofocus=""
+                                tabindex="1" value="ale.campero@bwater.mx">
+                        </div>
+                        <div class="mb-1">
+                            <div class="d-flex justify-content-between">
+                                <label class="form-label" for="login-password">Contraseña</label>
+                            </div>
+                            <div class="input-group input-group-merge form-password-toggle">
+                                <input class="form-control form-control-merge" value="ale.campero@bwater.mx" id="register-password"
+                                    type="password" name="password" placeholder="············"
+                                    aria-describedby="register-password" tabindex="3" /><span
+                                    class="input-group-text cursor-pointer"><svg
+                                        xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                        class="feather feather-eye">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                    </svg></span>
+                            </div>
+                        </div>
+                        <div class="mb-1">
+                            <div class="form-check">
+                                <input class="form-check-input" id="remember-me" type="checkbox"
+                                    tabindex="3">
+                                <label class="form-check-label" for="remember-me"> Recuerdame</label>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary w-100 waves-effect waves-float waves-light"
+                            tabindex="4">Ingresar</button>
+                    </form>
+                    <p class="text-center mt-2 d-none"><span>¿Aún no
+                            tienes cuenta?</span><a href="/registerpy4/PYT-4" ><span class="text-primary">&nbsp;¡create una ahora!</span></a></p>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

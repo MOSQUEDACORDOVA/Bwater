@@ -1,0 +1,1241 @@
+<style>
+  .none {
+    display: none;
+  }
+</style>
+
+{{#if msg}}
+<label id="msgs">{{msg}}</label>
+{{/if}}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<link rel="stylesheet" type="text/css" href="../../../app-assets/vendors/css/extensions/jquery.contextMenu.min.css">
+{{!--
+<link rel="stylesheet" type="text/css" href="../../../app-assets/vendors/css/extensions/toastr.min.css">
+<link rel="stylesheet" type="text/css" href="../../../app-assets/css/plugins/extensions/ext-component-toastr.css"> --}}
+<link rel="stylesheet" type="text/css" href="../../../app-assets/css/plugins/extensions/ext-component-context-menu.css">
+<script>
+  $(document).ready(function () {
+
+    $('.odd').addClass('dt-head-center');
+    $('.even').addClass('dt-head-center');
+
+    $('#btnGraficos').on('click', (e) => {
+      Reset(1)
+    });
+    $('#btnGastos').on('click', (e) => {
+      Reset(2);
+    });
+    $('#btnIngresos').on('click', (e) => {
+      Reset(3);
+    });
+
+    function Reset(num) {
+      $('#graficosReportes').removeClass('show');
+      $('#graficosReportes').addClass('collpase');
+
+      $('#gastos').removeClass('show');
+      $('#gastos').addClass('collpase');
+      $('#ingresos').removeClass('show');
+      $('#ingresos').addClass('collpase');
+      switch (num) {
+        case 1:
+          $('#graficosReportes').removeClass('collpase');
+          $('#graficosReportes').addClass('show');
+          break;
+        case 2:
+          $('#gastos').removeClass('collpase');
+          $('#gastos').addClass('show');
+          break;
+        case 3:
+          $('#ingresos').removeClass('collpase');
+          $('#ingresos').addClass('show');
+          break;
+      }
+    }
+  });
+
+</script>
+<input id="filterPosition" type="text" hidden>
+<input id="filterValue" type="text" hidden>
+<!-- BEGIN: Content-->
+<div class="app-content content ">
+  <div class="content-wrapper">
+    <div class="content-body">
+      <div class="row" id="selectores">
+        <div class="col-12">
+          <div class="card card-statistics">
+            <div class="card-body statistics-body">
+              <div class="row">
+                <span id="p1" class="d-none">ss</span>
+                <div class="col-sm-12">
+                </div>
+                <div class="col-xl-3 col-lg-4 col-sm-6 col-12 mb-2 mb-xl-0" id="btnIngresos" type="button"
+                  data-bs-toggle="collapse" href="#" aria-expanded="false">
+                  <div class="d-flex flex-row">
+                    <div class="avatar bg-light-primary me-2">
+                      <div class="avatar-content">
+                        <i data-feather='award' class="feather feather-trending-up text-primary avatar-icon"></i>
+                      </div>
+                    </div>
+                    <div class="my-auto">
+                      <h4 class="fw-bolder mb-0">Ingresos</h4>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-xl-3 col-lg-4 col-sm-6 col-12 mb-2 mb-xl-0" id="btnGraficos" type="button"
+                  data-bs-toggle="collapse" href="#" aria-expanded="false">
+                  <div class="d-flex flex-row">
+                    <div class="avatar bg-light-primary me-2">
+                      <div class="avatar-content">
+                        <i data-feather='clipboard' class="feather feather-trending-up text-primary avatar-icon"></i>
+                      </div>
+                    </div>
+                    <div class="my-auto">
+                      <h4 class="fw-bolder mb-0">Graficos Reporte</h4>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-xl-3 col-lg-4 col-sm-6 col-12 mb-2 mb-xl-0" id="btnGastos" type="button"
+                  data-bs-toggle="collapse" href="#" aria-expanded="false" aria-controls="collapseExample">
+                  <div class="d-flex flex-row">
+                    <div class="avatar bg-light-warning me-2">
+                      <div class="avatar-content">
+                        <i data-feather='info' class="feather feather-trending-up  avatar-icon"></i>
+                      </div>
+                    </div>
+                    <div class="my-auto">
+                      <h4 class="fw-bolder mb-0">Gastos</h4>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card card-body collapse show" id="ingresos">
+        <section id="column-search-datatable">
+          <div class="row match-height py4 justify-content-lg-start justify-content-center">
+            <div class="col-12 col-lg-4">
+              <div class="card card-congratulation mx-auto m-lg-0">
+                <div class="card-body text-center" id="btnGral" data-bs-toggle="collapse" href="#total" role="button"
+                  aria-expanded="false" aria-controls="total">
+                  <div class="avatar avatar-xl bg-light shadow">
+                    <div class="avatar-content">
+                      <i data-feather="award" class="font-large-1 text-primary"></i>
+                    </div>
+                  </div>
+                  <div>
+                    <h1 class="my-1 text-white text-center">Ganancias</h1>
+                    <p class="card-text mb-1">Venta Bruta: <strong id="ventasBruta"></strong></p>
+                    <p class="card-text mb-1">Por verificar: <strong id="porVerificar"></strong></p>
+                    <p class="card-text mb-1">Gastos: <strong id="gastosGrafica"></strong></p>
+                    <p class="card-text"> Ganancia neta: <strong id="gananciaNeta"></strong></p>
+                  </div>
+                  {{#if admin}}
+                  <div class="col">
+                    <label class="card-text mt-2 text-white w-100">Fecha: <strong id="fechaT"></strong></label>
+                    <div class="mb-0 d-flex">
+                      <input type="date" class="form-control mx-auto" name="start_date"
+                        placeholder="Cambiar fecha" id="fecha_inicio"
+                        onchange="pedidosbyDay($('#fecha_fin').val(), this.value)" />
+                      <input type="date" class="form-control mx-auto" name="end_date"
+                        placeholder="Cambiar fecha" id="fecha_fin"
+                        onchange="pedidosbyDay(this.value,$('#fecha_inicio').val())" />
+                    </div>
+                  </div>
+                  {{/if}}
+                </div>
+              </div>
+            </div>
+
+            <div class="col-12 col-lg-8" id="gananciasChart">
+              <div class="d-block mx-auto w-100" style="max-width: 500px;">
+                <div id="chart5"></div>
+
+              </div>
+            </div>
+          </div>
+
+        </section>
+      </div>
+
+
+    </div>
+    <div class="card collapse" id="graficosReportes">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header">
+            <div class="row">
+              <div class="col-6 col-md-3 mb-1">
+                <label class="form-label">Fecha desde</label>
+                <input type="date" class="form-control " placeholder="YYYY-MM-DD"
+                  id="fDesde">
+              </div>
+              <div class="col-6 col-md-3 mb-1">
+                <label class="form-label">Fecha hasta</label>
+                <input type="date" class="form-control " placeholder="YYYY-MM-DD"
+                  id="dHasta">
+              </div>
+              <div class="col-6 col-md-3 mb-1">
+                <label class="form-label">Zona</label>
+                <div class="position-relative" data-select2-id="45">
+                  <select class="select2 form-select select2-hidden-accessible" tabindex="-1" aria-hidden="true"
+                    id="selectZona">
+                    <option value="0" selected>Todas</option>
+                    {{#each sucursales_let as |sucursal i |}}
+                    <option value="{{id}}">{{nombre}}</option>
+                    {{/each}}
+                  </select>
+                </div>
+              </div>
+              <div class="col-6 col-md-3 mb-1">
+                <label class="form-label">Chofer</label>
+                <select type="text" class="form-control select2" id="selectChofer">
+                  <option value="0" selected>Todos</option>
+                  {{#each choferes_ as |chofer i |}}
+                  <option data-id="{{id}}" value="{{id}}">{{name}} {{lastName}}</option>
+                  {{/each}}
+                </select>
+              </div>
+              <div class="col-6 col-md-3 mb-1 d-none">
+                <label class="form-label">Cantidad Pedidos</label>
+                <input type="number" class="form-control" placeholder="1" id="cantPedidos" value="0">
+              </div>
+              <div class="col-6 col-md-3 mb-1 d-none">
+                <label class="form-label">Cantidad Garrafones</label>
+                <input type="number" class="form-control" placeholder="1" id="cantGarrafones" value="0">
+              </div>
+              <div class="col-6 col-md-3 mb-1 d-none">
+                <label class="form-label">Categorías</label>
+                <select type="text" class="form-control select2" id="selectCategoria">
+                  <option value="0">Todas</option>
+                  <option value="Refil">Refil</option>
+                  <option value="Canje">Canje</option>
+                  <option value="Nuevo">Nuevo</option>
+                  <option value="Obsequio">Obsequio</option>
+                </select>
+              </div>
+                           <div class="col-6 col-md-3 mb-1">
+                <label class="form-label">Tipo Cliente</label>
+                <select type="text" class="form-control select2" id="tipoCliente">
+                  <option value="0">Todos</option>
+                  <option value="Punto de venta">Puntos de venta</option>
+                  <option value="Negocio">Negocios</option>
+                  <option value="Residencial">Residencial</option>
+                  <option value="Nuevos">Nuevos</option>
+                </select>
+              </div>
+              <div class="col-6 col-md-3 mb-1 d-flex align-items-end">
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="checkbox" id="ventasChk" value="ventas" checked>
+                  <label class="form-check-label mb-1" for="ventasChk">Ventas</label>
+                </div>
+              </div>
+              <div class="col-6 col-md-3">
+                <div class="btn-group">
+                  <button type="button" class="btn btn-primary" id="btnFiltrar">Filtrar</button>
+                  <button type="button" class="btn btn-primary  d-none" data-bs-toggle="collapse"
+                    data-bs-target="#transferenciasGrap" id="btnTransferenciasCol">Transferencias</button>
+                  <button type="button" class="btn btn-primary  d-none" data-bs-toggle="collapse"
+                    data-bs-target="#globalGrap" id="VerPedidos">Ver Pedidos</button>
+                </div>
+              </div>
+
+              {{!<button id="btn">Reset</button>}}
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="row justify-content-center">
+              <div class="col-12 col-lg-8 show" id="ventasGrap">
+                <div id="chart"></div>
+              </div>
+              <div class="col-12 my-3 collapse" id="transferenciasGrap">
+                <div id="chart2"></div>
+              </div>
+              <div class="col-12 collapse" id="globalGrap">
+                <div id="chart3"></div>
+              </div>
+              <div class="col-12 col-lg-8 collapse" id="gastosGrap">
+                <div id="chart4"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--MODULO GASTOS-->
+    <div class="card collapse" id="gastos">
+      <div class="card-body">
+        <h4 class="card-title">Gastos</h4>
+        <p class="card-text"> Ver gastos y agregos nuevos.</p>
+        <div class="scrolling-inside-modal">
+          <button type="button" class="btn btn-outline-primary text-primary waves-effect mb-2" data-bs-toggle="modal"
+            data-bs-target="#addGasto_modal">
+            Agregar
+          </button>
+        </div>
+      </div>
+      <section id="column-search-datatable">
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="table-responsive">
+                <table class="table dt-column-search" id="gastosTableDt">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Tipo</th>
+                      <th>Personal</th>
+                      <th>Monto</th>
+                      <th>Fecha</th>
+                      <th>Observaciones</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tfoot>
+                    <tr>
+                      <th colspan="2" style="text-align:right"> Total</th>
+                      <th></th>
+                      <th></th>
+                      <th></th>
+                      <th></th>
+
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+            </div>
+          </div>
+
+
+      </section>
+      <!--MODAL GUARDAR GASTOS-->
+      <div class="modal fade" id="addGasto_modal" tabindex="-1" aria-labelledby="addGasto_modalTitle"
+        style="display: none;" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="addGasto_modalTitle">Gastos</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <form class="needs-validation was-validated" id="gastoForm">
+                <input type="hidden" class="form-control" id="idGasto" name="idGasto" />
+                <div class="d-none">
+                  <label for="register-ciudad" class="form-label">Seleccione una zona</label>
+                  <select name="zona" placeholder="zona" aria-describedby="register-ciudad" tabindex="3"
+                    class="form-control mb-2 zona_reg_modal_pedido" id='zona'>
+                    <option selected value="1">Seleccione una zona</option>
+                    {{#each sucursales_let as |sucursal i |}}
+                    <option value="{{id}}">{{nombre}}</option>
+                    {{/each}}
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="register-ciudad" class="form-label">Seleccione una categoria</label>
+                  <select name="categoria" placeholder="categoria" class="form-control mb-2" id='categoria'>
+                    <option default value="default">Seleccione una categoria</option>
+                    <option value="NOMINA">NOMINA</option>
+                    <option value="LUZ 1">LUZ 1</option>
+                    <option value="LUZ 2">LUZ 2</option>
+                    <option value="PIPA">PIPA</option>
+                    <option value="TAPAS">TAPAS</option>
+                    <option value="GARRAFONES">GARRAFONES</option>
+                    <option value="SELLOS BWATER">SELLOS BWATER</option>
+                    <option value="RENTA CAM 1">RENTA CAM 1</option>
+                    <option value="RENTA CAM 2">RENTA CAM 2</option>
+                    <option value="RENTA CAM 3">RENTA CAM 3</option>
+                    <option value="MATRIZ RENTA">MATRIZ RENTA</option>
+                    <option value="ADAMAR RENTA">ADAMAR RENTA</option>
+                    <option value="GAS 1">GAS 1</option>
+                    <option value="GAS 2">GAS 2</option>
+                    <option value="GAS 3">GAS 3</option>
+                    <option value="GAS 4">GAS 4</option>
+                    <option value="GAS 5">GAS 5</option>
+                    <option value="GAS 6">GAS 6</option>
+                    <option value="BONOS">BONOS</option>
+                    <option value="PRESTAMO BANCO">PRESTAMO BANCO</option>
+                    <option value="PRESTAMO YOTE">PRESTAMO YOTE</option>
+                    <option value="PRESTAMO">PRESTAMO</option>
+                    <option value="ADMINISTRATIVO">ADMINISTRATIVO</option>
+                    <option value="REGALO EMPLEADOS">REGALO EMPLEADOS</option>
+                    <option value="RACKS">RACKS</option>
+                    <option value="LIMPIEZA">LIMPIEZA</option>
+                    <option value="HIPOCLORITO Y MAS">HIPOCLORITO Y MAS</option>
+                    <option value="MECANICO">MECANICO</option>
+                    <option value="MANTENIMIENTO">MANTENIMIENTO</option>
+                    <option value="REFACCIONES">REFACCIONES</option>
+                    <option value="OTROS">OTROS</option>
+                  </select>
+                </div>
+                <div class="form-group d-none" id="personalList">
+                  <label for="register-ciudad" class="form-label">Seleccione un personal</label>
+                  <select name="personal" placeholder="personal" aria-describedby="register-ciudad" tabindex="3"
+                    class="form-control mb-2 personal_reg_modal_pedido" id='personal_gastos'>
+                    <option selected value="">Seleccione un personal</option>
+                    {{#each personalList as |personal i |}}
+                    <option value="{{id}}">{{name}} {{lastName}}</option>
+                    {{/each}}
+                  </select>
+                </div>
+                <div class="form-group"><label for="register-firstName" class="form-label">Fecha:</label>
+                  <input type="date" name="fecha" tabindex="1" class="form-control  flatpickr-input mb-2"
+                    id="fecha_gastos">
+                </div>
+                <div class="form-group"><label for="register-firstName" class="form-label">Monto:</label>
+                  <input type="number" name="monto_gastos" class="form-control mb-2" id="monto_gastos">
+                </div>
+                <div class="form-group"><label for="register-firstName" class="form-label">Observación</label>
+                  <input type="text" name="observacion" placeholder="Observación" class="form-control mb-2"
+                    id="observacion_gastos">
+                </div>
+                <div class="modal-footer">
+                  <button tabindex="26" class="btn btn-primary btn-block waves-effect waves-float waves-light"
+                    type="button" id="saveGasto">Guardar</button>
+                </div>
+              </form>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+ <div class="modal fade" id="modal_pedidos" tabindex="-1" aria-labelledby="modal_pedidos"
+      style="display: none;" aria-hidden="corte_modal">
+      <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content">
+          <div class="modal-header">
+            {{!-- <h5 class="modal-title" id="corte_modalTitle"><button class="btn btn-primary" id="printButtonGral">Imprimir</button></h5> --}}
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body" id="corte_modalBody">
+                            <div class="table-responsive">
+                                <div class="card">
+                                    <table class="datatables-basic2 table dt-column-search2"
+                                        id="ventas-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Nº Pedido</th>
+                                                <th></th>
+                                                <th>Cliente</th>
+                                                <th>Total garrafones</th>
+                                                <th>Refill</th>
+                                                <th>Canje</th>
+                                                <th>Nuevo</th>
+                                                <th>Obsequio</th>
+                                                <th>Monto Total</th>
+                                                <th>Status del Pedido</th>
+                                                <th>Status de Pago</th>
+                                                <th>Metodo de Pago</th>
+                                                <th>Fecha</th>
+                                                <th>Opciones</th>
+                                                <th>oculto asentamiento </th>
+                                            </tr>
+                                        </thead>
+                                        <tfoot>
+                                            <tr>
+                                                <th colspan="2" style="text-align:right"> Total</th>
+                                                <th></th>
+                                                <th></th>
+                                                <th></th>
+                                                <th></th>
+                                                <th></th>
+                                                <th></th>
+                                                <th></th>
+                                                <th></th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script>
+
+  let ventasChart, newChart;
+  let optionsVentasChart, interval;
+  let optionsGastosChart;
+
+  $('#btnFiltrar').on('click', (e) => {
+
+    if ($('#ventasChk').is(':checked') && $('#selectZona').val() == 0 && $('#selectChofer').val() == 0 && $('#tipoCliente').val() == 0) {
+      ventasXfecha($('#fDesde').val(), $('#dHasta').val());//TODAS LAS ZONAS Y CHOFERES
+      return
+    }
+    if ($('#ventasChk').is(':checked') && $('#selectZona').val() > 0 && $('#selectChofer').val() == 0 && $('#tipoCliente').val() == 0) {
+      ventasXfecha($('#fDesde').val(), $('#dHasta').val(), $('#selectZona').val());//SOLO ZONA
+      return
+    }
+
+    if ($('#ventasChk').is(':checked') && $('#selectZona').val() > 0 && $('#selectChofer').val() > 0 &&  $('#tipoCliente').val() == 0) {
+      console.log($('#selectZona').val())
+      ventasXfecha($('#fDesde').val(), $('#dHasta').val(), $('#selectZona').val(), $('#selectChofer').val());//ZONA Y CHOFER
+      return
+    }
+
+    if ($('#ventasChk').is(':checked') && $('#selectZona').val() == 0 && $('#selectChofer').val() > 0 &&  $('#tipoCliente').val() == 0) {
+      ventasXfecha($('#fDesde').val(), $('#dHasta').val(), null, $('#selectChofer').val());//SOLO CHOFER
+      return
+    }
+    if ($('#ventasChk').is(':checked') && $('#selectChofer').val() == 0 &&  $('#tipoCliente').val() !== 0) {
+      ventasXfecha($('#fDesde').val(), $('#dHasta').val(), null, null, $('#tipoCliente').val());//clientesNuevosChk
+      return
+    }
+    if ($('#ventasChk').is(':checked') && $('#selectChofer').val() != 0 &&  $('#tipoCliente').val() !== 0) {
+      ventasXfecha($('#fDesde').val(), $('#dHasta').val(), null, $('#selectChofer').val(), $('#tipoCliente').val());//clientesNuevosChk
+      return
+    }
+
+  });
+
+
+
+  $('#btngastosG').on('click', (e) => {
+    CollapseGraf(2);
+  });
+
+  function CollapseGraf(num) {
+    $('#ventasGrap').removeClass('show');
+    $('#ventasGrap').addClass('collapse');
+
+    $('#gastosGrap').removeClass('show');
+    $('#gastosGrap').addClass('collapse');
+
+    switch (num) {
+      case 1:
+        $('#ventasGrap').removeClass('collapse');
+        $('#ventasGrap').addClass('show');
+        break;
+      case 2:
+        $('#gastosGrap').removeClass('collapse');
+        $('#gastosGrap').addClass('show');
+        gastosChartSet()
+        break;
+
+    }
+  }
+
+
+  async function ventasXfecha(diainicio, diaFin, zona, chofer, tipoCliente) {
+    console.log("🚀 ~ file: reportes.hbs ~ line 528 ~ ventasXfecha ~ diainicio", diainicio)
+    console.log('zona:' + zona + ',chofer:' + chofer + ',tipoCliente:' + tipoCliente)
+    console.log(GastosList);
+      let TotalIngresos=0, GastosbyDay=0, gananciasT=0;
+  let inicio = moment(diainicio,'YYYY-MM-DD').format('YYYY-MM-DD');
+  let fin = moment(diaFin,'YYYY-MM-DD').format('YYYY-MM-DD');
+  GastosList.forEach(element => {
+    if (moment(element.fecha).isBetween(inicio,fin, undefined, '[]')) {
+      GastosbyDay += parseFloat(element.monto);
+    }    
+  });
+    if (newChart) {
+      newChart.destroy()
+    }
+    let optionsVentasChart0;
+    let pedidosTotalizado = [];
+    let transferencias = 0, deudores = 0, totalVentas = 0, totalCanje = 0, totalRefil = 0, totalEnvNuevo = 0, totalObsequio = 0, totalGarraf = 0, totalPedidos = 0;
+    let cantidadCanje = 0, cantidadRefil = 0, cantidadEnvNuevo = 0;
+    pedidos = await fetch(`/getPedidosbyDaypy4/${moment(diainicio, 'YYYY-MM-DD').format('YYYY-MM-DD')}/${moment(diaFin, 'YYYY-MM-DD').format('YYYY-MM-DD')}`)
+      .then(response => response.json())
+      .then(data => {
+        return data.pedidos_let;
+      });
+
+    switch (true) {
+      case zona == null && chofer == null && tipoCliente == null: //TODAS LAS ZONAS Y CHOFERES
+        pedidos.forEach(element => {
+          if (element.status_pedido == "Entregado" && element.status_pago == "Pagado") {
+            pedidosTotalizado.push(element)
+          }
+        });
+        break;
+      case zona !== null && chofer == null && tipoCliente == null://SOLO ZONA
+        pedidos.forEach(element => {
+          if (element.status_pedido == "Entregado" && element.status_pago == "Pagado" && element.sucursaleId == zona) {
+            pedidosTotalizado.push(element)
+          }
+        });
+        break;
+      case zona !== null && chofer !== null && tipoCliente == null: //ZONA Y CHOFER
+        pedidos.forEach(element => {
+          if (element.status_pedido == "Entregado" && element.status_pago == "Pagado" && element.sucursaleId == zona && element.personalId == chofer) {
+            pedidosTotalizado.push(element)
+          }
+        });
+        break;
+      case zona == null && chofer !== null && tipoCliente == null: //SOLO CHOFER
+        pedidos.forEach(element => {
+          if (element.status_pedido == "Entregado" && element.status_pago == "Pagado" && element.personalId == chofer) {
+            pedidosTotalizado.push(element)
+          }
+        });
+        break;
+      case zona == null && chofer == null && tipoCliente == 'Nuevos': //tipoCliente
+     pedidos.forEach(element => {
+          if (element.status_pedido == "Entregado" && element.status_pago == "Pagado" && element.cliente.nuevo == 'SI') {
+            pedidosTotalizado.push(element)
+          }
+        });
+        break;
+      case zona == null && chofer != null && tipoCliente == 'Nuevos': //tipoCliente
+     pedidos.forEach(element => {
+          if (element.status_pedido == "Entregado" && element.status_pago == "Pagado" && element.personalId == chofer && element.cliente.nuevo == 'SI') {
+            pedidosTotalizado.push(element)
+          }
+        });
+        break;
+              case zona == null && chofer == null && tipoCliente !== 'Nuevos': //tipoCliente
+     pedidos.forEach(element => {
+          if (element.status_pedido == "Entregado" && element.status_pago == "Pagado" && element.cliente.tipo == tipoCliente) {
+            pedidosTotalizado.push(element)
+          }
+        });
+        break;
+              case zona == null && chofer != null && tipoCliente !== 'Nuevos': //tipoCliente
+     pedidos.forEach(element => {
+          if (element.status_pedido == "Entregado" && element.status_pago == "Pagado"&& element.personalId == chofer && element.cliente.tipo == tipoCliente) {
+            pedidosTotalizado.push(element)
+          }
+        });
+        break;
+    }
+
+    console.log(pedidosTotalizado)
+createTable (pedidosTotalizado)
+    let garrafon19L;
+    totalPedidos = pedidosTotalizado.length;
+    pedidosTotalizado.forEach(venta => {
+      totalVentas += parseInt(venta.monto_total);
+      //console.log((JSON.parse(venta.garrafon19L))['refill_mont']);
+
+      totalGarraf += parseInt(venta.total_garrafones_pedido);
+      
+      cantidadRefil += parseInt(venta.total_refill_pedido);
+      totalRefil += parseInt((JSON.parse(venta.garrafon19L))['refill_mont']);      
+
+      cantidadCanje += parseInt(venta.total_canje_pedido);
+      totalCanje += parseInt((JSON.parse(venta.garrafon19L))['canje_mont']);      
+
+      cantidadEnvNuevo += parseInt(venta.total_nv_pedido);
+      totalEnvNuevo += parseInt((JSON.parse(venta.garrafon19L))['nuevo_mont']);
+
+      totalObsequio += parseInt(venta.total_obsequio_pedido);
+    });
+  gananciasT = totalVentas - GastosbyDay;
+
+    optionsVentasChart0 = {
+      series: [totalPedidos, totalVentas,cantidadRefil, totalRefil,cantidadCanje, totalCanje,cantidadEnvNuevo, totalEnvNuevo, totalObsequio,GastosbyDay,gananciasT],
+      chart: {
+        width: '100%',
+        type: 'donut',
+      },
+      labels: ['Total Pedidos', 'Venta Total','Refil', 'D. Refil','Canje', 'D. Canje', 'Envases Nuevos','D. Envases Nuevos', 'Obsequios', 'Gastos','Ganancias neta'],
+      dataLabels: {
+        enabled: false,
+        textAnchor: 'start',
+        colors: ['#0089FC', '#00FCA4', '#01C728','#01C728','#C76701','#F92600','#FF0000','#FF0083','#F000FF','#8B00FF','#2A00FF']
+      },
+      fill: {
+  colors: ['#0089FC', '#00FCA4', '#01C728','#01C728','#C76701','#F92600','#FF0000','#FF0083','#F000FF','#8B00FF','#2A00FF']
+},
+      responsive: [{
+        breakpoint: 992,
+        options: {
+          width: '100%'
+          /*plotOptions: {
+            pie: {
+              donut: {
+                labels: {
+                  show: false,
+                }
+              },
+            }
+          }*/
+        },
+      }],
+      legend: {
+        position: 'left',
+        offsetY: 0,
+        height: 250,
+        formatter: function (seriesName, opts) {
+          let options0 = opts.w.globals.series[opts.seriesIndex]
+          if (seriesName == 'Venta Total'|| seriesName == 'D. Refil' || seriesName == 'D. Canje' || seriesName == 'D. Envases Nuevos'|| seriesName == 'Gastos'|| seriesName == 'Ganancias neta') {
+            options0 = '$'+opts.w.globals.series[opts.seriesIndex] 
+          }
+          return [seriesName, ": ", options0]
+        },
+         labels: {
+          colors: ['#0089FC', '#00FCA4', '#01C728','#01C728','#C76701','#F92600','#FF0000','#FF0083','#F000FF','#8B00FF','#2A00FF'],
+          useSeriesColors: false
+      },
+      },
+      plotOptions: {
+        pie: {
+          donut: {
+            labels: {
+              show: true,
+
+            }
+          },
+
+        }
+      }
+    };
+
+
+    newChart = new ApexCharts(document.querySelector("#chart"), optionsVentasChart0);
+    newChart.render();
+  }
+
+
+ async function clientesNuevos(diainicio, diaFin) {
+   let clientesData = JSON.parse($('#array').val())
+   console.log(clientesData);
+    ///console.log('diainicio:' + diainicio + ',diaFin:' + diaFin)
+    if (newChart) {
+      newChart.destroy()
+    }
+    let optionsVentasChart0;
+    let clientesDataTotalizado = [];
+    let totalClientes = 0, nuevos = 0;
+console.log('diainicio:' + diainicio + ',diaFin:' + diaFin);
+    switch (true) {
+      case diainicio == '' && diaFin == '': //TODAS LAS ZONAS Y CHOFERES
+      
+        clientesDataTotalizado.push(clientesData);
+        clientesData.forEach(element => {
+            clientesDataTotalizado.push(element)
+        });
+        break;
+      case diainicio !== null && diaFin !== null://POR FECHA
+      let fechaConsulta;
+      let fechaini= moment(diainicio,'DD-MM-YYYY').format('YYYY-MM-DD')
+      let fechaFin=moment(diaFin,'DD-MM-YYYY').format('YYYY-MM-DD')
+        clientesData.forEach(element => { 
+          fechaConsulta = moment(element.createdAt).format('YYYY-MM-DD')       
+          if (moment(fechaConsulta,'YYYY-MM-DD').isBetween(fechaini,fechaFin,'d', '[]')) {
+            clientesDataTotalizado.push(element)
+          }
+        });
+        break;     
+    }
+
+    console.log(clientesDataTotalizado)
+    totalClientes = clientesData.length;
+    clientesDataTotalizado.forEach(clientes => {
+      if(clientes.nuevo == 'SI'){
+          nuevos++;
+      }
+      
+    });
+    ///console.log(optionsVentasChart);
+
+    optionsVentasChart0 = {
+      series: [totalClientes, nuevos],
+      chart: {
+        width: '100%',
+        type: 'donut',
+      },
+      labels: ['Total Clientes', 'Nuevos'],
+      dataLabels: {
+        enabled: false,
+        textAnchor: 'start'
+      },
+      responsive: [{
+        breakpoint: 992,
+        options: {
+          width: '100%'
+          /*plotOptions: {
+            pie: {
+              donut: {
+                labels: {
+                  show: false,
+                }
+              },
+            }
+          }*/
+        },
+      }],
+      legend: {
+        position: 'left',
+        offsetY: 0,
+        height: 160,
+        formatter: function (seriesName, opts) {
+          let options0 = opts.w.globals.series[opts.seriesIndex]
+          if (seriesName == 'T. Ventas') {
+            options0 = opts.w.globals.series[opts.seriesIndex] + '$'
+          }
+          return [seriesName, " - ", options0]
+        }
+      },
+      plotOptions: {
+        pie: {
+          donut: {
+            labels: {
+              show: true,
+
+            }
+          },
+
+        }
+      }
+    };
+
+
+    newChart = new ApexCharts(document.querySelector("#chart"), optionsVentasChart0);
+    newChart.render();
+  }
+
+async function createTable (pedidosTotalizado){
+  console.log('pedidosTotalizado')
+  $('#ventas-table').DataTable().destroy();
+  $('.datatables-basic2').empty();
+        $('.datatables-basic2').html(`                                        <thead>
+                                            <tr>
+                                                <th>Nº Pedido</th>
+                                                <th></th>
+                                                <th>Cliente</th>
+                                                <th>Total garrafones</th>
+                                                <th>Refill</th>
+                                                <th>Canje</th>
+                                                <th>Nuevo</th>
+                                                <th>Obsequio</th>
+                                                <th>Monto Total</th>
+                                                <th>Status del Pedido</th>
+                                                <th>Status de Pago</th>
+                                                <th>Metodo de Pago</th>
+                                                <th>Fecha</th>
+                                                <th>Opciones</th>
+                                                <th>oculto asentamiento </th>
+                                            </tr>
+                                        </thead>
+                                        <tfoot>
+                                            <tr>
+                                                <th colspan="2" style="text-align:right"> Total</th>
+                                                <th></th>
+                                                <th></th>
+                                                <th></th>
+                                                <th></th>
+                                                <th></th>
+                                                <th></th>
+                                                <th></th>
+                                                <th></th>
+                                            </tr>
+                                        </tfoot>`);
+ var zonas =await  fetch('/obtenerzonaspy4')
+.then(response => response.json())
+.then(data => {
+    return data.zonas
+});
+ let codigosP = $('#array_cp').val();
+ $('.dt-column-search2 thead tr').clone(true).appendTo('.dt-column-search2 thead');
+    $('.dt-column-search2 thead tr:eq(1) th').each(function (i) {
+      var title = $(this).text();
+      $(this).html('<input type="text" class="form-control form-control-sm" placeholder="Buscar ' + title + '" id="P'+title+i+'"/>');
+      $('input', this).on('keyup', function () {
+        let valor = this.value
+        if (dt_basic2.column(i).search() !== this.value) {          
+          dt_basic2.column(i).search(this.value).draw();
+        }else{          
+          dt_basic2.column(i).search(valor).draw();          
+        }
+      });
+    });
+    
+  let codigosP_arr = JSON.parse(codigosP.replace(/&quot;/g,'"'))
+      dt_basic2 = $('#ventas-table').DataTable({
+      data: pedidosTotalizado,
+      columns: [
+        { data: 'id' },
+        { data: 'sucursaleId', visible:false },
+        { data: 'cliente.firstName' },
+        { data: 'total_garrafones_pedido' },
+        { data: 'total_refill_pedido' },
+        { data: 'total_canje_pedido' },
+        { data: 'total_nv_pedido' },
+        { data: 'total_obsequio_pedido' },///7
+        { data: 'monto_total'}, // used for sorting so will hide this column
+        { data: 'status_pedido' },
+        { data: 'status_pago' },
+        { data: 'metodo_pago' },
+        { data: 'fecha_pedido'},
+        {   // Actions
+          targets: -1,
+          title: 'Opciones',
+          visible: false,
+          render: function (data, type, full, meta) {
+            if ($('#otro_rol').length>0) {
+              
+                
+            let Hoy = moment().format('DD/MM/YYYY'); 
+            
+            let fecha =moment(full['fecha_pedido']).format('DD/MM/YYYY')
+            
+                var fecha_final= moment(Hoy).isAfter(fecha); // true
+                    
+            } 
+            let modif = ""
+            
+            if (fecha_final == true) {
+              modif = "d-none"
+            }
+            return (
+              '<div class="d-inline-flex">' +
+              '<a href="javascript:;" class="'+full['id']+' dropdown-item delete-record'+full['id']+'" onclick=\'delete_pedido("'+full['id']+'",".datatables-basic2")\'>' +
+              feather.icons['trash-2'].toSvg({ class: 'font-small-4 '+full['id']+'' }) +
+              '</a>'+
+              '<a href="javascript:;" class="'+full['id']+' dropdown-item '+modif+'" onclick=\'edit_pedido("'+full['id']+'", "'+meta.row+'","datatables-basic2")\'>' +
+              feather.icons['file-text'].toSvg({ class: 'font-small-4 '+full['id']+'' }) +
+              '</a>'              
+            );
+          } },
+
+          { data: 'cliente.cpId' },
+        ], columnDefs: [
+         /* { visible: false, targets: groupColumn2,
+           
+          },*/
+          { visible: false, targets: 14,
+            render: function (data, type, full) {
+              let asentamiento = ""
+              for (let i = 0; i < codigosP_arr.length; i++) {
+                if (codigosP_arr[i]['id'] == full['cliente']['cpId']) {
+                  asentamiento = codigosP_arr[i]['asentamiento']
+                }
+                
+              }
+              return asentamiento
+            }
+          },
+          {
+            // Label
+            targets: 0,
+            render: function (data, type, full, meta) {
+            //  let fecha_creado = full['fecha_pedido'], modificado = full['updatedAt']
+            //  let modificacion = moment(fecha_creado).isSame(modificado)
+            //   if (modificacion == false) {
+            //     return (`<span class="badge rounded-pill badge-light-danger"> ${full['id']}</span>`);
+            //   }
+              var cliente_arr = encodeURIComponent(JSON.stringify(full['cliente']));
+              var color_tag ="", color_text="", nombre;
+              if (full['cliente']['etiqueta'] ==null) {
+                color_tag =0
+                color_text="black"
+                nombre=""
+              }else{
+                color_tag =full['cliente']['etiqueta']['color']
+                color_text="white"
+                nombre=full['cliente']['etiqueta']['etiquetas']
+              }
+  
+              return (`<span class="d-none">${nombre}</span><span class="badge rounded-pill " style="cursor:pointer; background-color: ${color_tag}; color:${color_text}"> ${full['id']}</span>`);
+            }
+          },
+          {
+            // Label
+            targets: 1,
+            render: function (data, type, full, meta) {
+              for (let i = 0; i < zonas.length; i++) {
+                if (zonas[i].id == data) {
+                  var zona_arr = encodeURIComponent(JSON.stringify(zonas[i]));       
+                }                     
+              }
+              return (`<span class="zona" style="cursor:pointer;" data-arrzona="${zona_arr}">${data}</span>`);
+            }
+          },
+          {
+            // Label
+            targets: 2,
+            render: function (data, type, full, meta) {
+              let asentamiento = ""
+              for (let i = 0; i < codigosP_arr.length; i++) {
+                if (codigosP_arr[i]['id'] == full['cliente']['cpId']) {
+                  asentamiento = codigosP_arr[i]['asentamiento']
+                }
+                
+              }
+              var $status_number = full['cliente']['tipo'];
+              var $status = {
+                "Residencial": { title: full['cliente']['firstName'] +" "+ full['cliente']['lastName'] + " / "+ asentamiento, class: 'badge-light-info' },
+                "Punto de venta": { title: full['cliente']['firstName'] +" "+ full['cliente']['lastName'] + " / "+ asentamiento, class: ' badge-light-success' },
+                "Negocio": { title: full['cliente']['firstName'] +" "+ full['cliente']['lastName'] + " / "+ asentamiento, class: ' badge-light-danger' },
+              };
+              if (typeof $status[$status_number] === 'undefined') {
+                return data;
+              }
+          var cliente_arr = encodeURIComponent(JSON.stringify(full['cliente']));
+          var color_tag ="", color_text=""
+          if (full['cliente']['etiqueta'] ==null) {
+            color_tag =0
+            color_text="black"
+          }else{
+            color_tag =full['cliente']['etiqueta']['color']
+            color_text="white"
+          }
+          return (
+            `<span class="d-none">${asentamiento}</span><span class="hover_cliente badge rounded-pill ${$status[$status_number].class}" data-id="${full['cliente']['id']}" data-arraycliente="${cliente_arr}" data-title="Datos de ${full['cliente']['firstName']}" >${$status[$status_number].title}</span><span class="d-none">${full['cliente']['calle']} ${full['cliente']['casa']} ${full['cliente']['avenida']}</span>`
+          );
+            }
+          },
+        {
+          // Label
+          targets: 3,className:'to_garra2',
+          render: function (data, type, full, meta) {
+            let total = parseInt(data)- parseInt(full['total_obsequio_pedido'])
+            return (
+              '<span class="badge rounded-pill badge-light-info modal_detail_garrafones cantidad"  data-id="'+full['cliente']['id']+'" data-rfeill="'+full['total_refill_pedido']+'" data-total="'+data+'" data-canje="'+full['total_canje_pedido']+'" data-env="'+full['total_nv_pedido']+'" data-obsequio="'+full['total_obsequio_pedido']+'" data-title="Detalle garrafones"   style="cursor:pointer;" >' +
+              total +
+              '</span>'
+            );
+          }
+        
+        
+        },
+        {
+          // Label
+          targets: 8,
+          render: function (data, type, full, meta) {
+            
+            let detailRefill = 0, detailCanje = 0, detailNuevo=0,desc=0,sindesc, condesc=0
+            let montoRefill= 38, montoCanje= 65,monto_nuevo= 115;
+            if (moment(full['fecha_pedido'], 'YYYY-MM-DD').isSameOrBefore(moment('2022-05-15','YYYY-MM-DD'))) {
+              montoRefill= 35, montoCanje= 55,monto_nuevo= 105;
+            }
+            detailRefill = parseFloat(full['total_refill_pedido'])*montoRefill;
+            detailCanje = parseFloat(full['total_canje_pedido'])*montoCanje;
+            detailNuevo = parseFloat(full['total_nv_pedido'])*monto_nuevo;
+            desc = full['descuento']
+            sindesc = data
+            condesc =parseFloat(data)- parseFloat(desc) 
+           return (
+            '<span class="badge rounded-pill badge-light-info detail_monto " data-id="'+full['cliente']['id']+'" data-rfeill="'+detailRefill+'" data-total="'+data+'" data-canje="'+detailCanje+'" data-env="'+detailNuevo+'" data-obsequio="'+full['total_obsequio_pedido']+'" data-descuento="'+desc+'" data-title="Detalle monto total" data-sindesc="'+sindesc+'" data-condesc="'+condesc+'" style="cursor:pointer;" >$' +
+            condesc +
+            '</span>'
+          );
+        }
+      },
+        {
+          // Label
+          targets: 9,
+          render: function (data, type, full, meta) {
+            var $status_number = full['status_pedido'];
+            var $status = {
+              "Reasignado": { title: 'Reasignado', class: 'badge-light-primary' },
+              "Entregado": { title: 'Entregado', class: ' badge-light-success' },
+              "Cancelado": { title: 'Devuelto', class: ' badge-light-danger' , motivo: ' motivo_hover'},
+            };
+            if (typeof $status[$status_number] === 'undefined') {
+              return data;
+            }
+            return (
+              '<span class="badge rounded-pill' +
+              $status[$status_number].class +" "+ $status[$status_number].motivo +
+              '" style="cursor:pointer"   data-status="'+full['status_pedido'] +'" data-motivo="'+full['motivo'] +'" data-id="'+full['id']+'" onclick=\'cambioSP("'+full['id'] +'","'+full['status_pedido'] +'")\'>' +
+              $status[$status_number].title +
+              '</span>'
+            );
+          }
+        },
+        {
+          // Label
+          targets: 10,
+          render: function (data, type, full, meta) {
+            var $status_number = full['status_pago'];
+            var $status = {
+              "Pagado": { title: 'Pagado', class: 'badge-light-success' },
+              "Por verificar": { title: 'Por verificar', class: ' badge-light-yellow' },
+            };
+            if (typeof $status[$status_number] === 'undefined') {
+              return data;
+            }
+            let span = `<span id="sPago${full['id']}" class="badge rounded-pill ${$status[$status_number].class}" style="cursor:pointer" onclick=\'cambioPago("${full['id']}","${full['status_pago']}","${full['fecha_pedido']}","${full['monto_total']}","${meta.row}","datatables-basic2")\'>${$status[$status_number].title}</span>`
+            return span;
+          }
+        },
+        {
+          // Label
+          targets: 11,
+          render: function (data, type, full, meta) {
+            let span = `<span id="mPago${full['id']}" class="badge rounded-pill badge-light-info" style="cursor:pointer" onclick=\'cambioMetodoPago("${full['id']}","${data}","${meta.row}","datatables-basic2")\'>${data}</span>`;
+            return span;
+          }
+        },
+        {
+          targets: 12,
+          render:function(data){
+            let fecha = `<span class="d-none">${moment(data).format('YYYYMMDD')}</span>${moment(data).format('DD/MM/YYYY')}`
+            return fecha;
+          }
+        },
+      ],
+     
+      order: [[8,'desc'],[10,'asc'],[2,'asc']],
+      dom: '<" none"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>t<"d-flex justify-content-between mx-0 row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
+      orderCellsTop: true,
+      displayLength: 10,
+      lengthMenu: [7, 10, 25, 50, 75, 100], initComplete: function(settings, json) {
+        var api = this.api();
+      if ($('#otro_rol').length>0) {
+        api.column(1).visible( false );
+      }
+        
+      },
+      drawCallback: function (settings) {
+        let sumaG = 0;
+        $('.datatables-basic2').dataTable().$('.cantidad').each(function(){
+    if ($(this).text() == "-") {
+      sumaG
+    }else{
+          sumaG += parseFloat($(this).text());
+    }    
+  });
+  $('#ventas-table_info').append(`<span> / Total garrafones: ${sumaG} </span>`)
+
+        var api = this.api();
+        var rows = api.rows({ page: 'current' }).nodes();
+        var last = null;
+        let sumaT = 0;
+    /*    api
+          .column(groupColumn2, { page: 'current' })
+          .data()
+          .each(function (group, i) {
+            let icono =`<i class="fas fa-truck"></i>`
+            if (last !== group) {
+              $(rows)
+                .eq(i)
+
+                .before('<tr class="group"><td colspan="9"><i class="fas fa-truck me-1"></i>' + group + '</td></tr>');
+
+
+              last = group;
+            }
+          });*/
+          api.column(3, { page: 'current' }).data().each(function(group, i){
+            sumaT +=parseInt(group)
+           
+        });
+        $('tfoot .to_garra2').text(sumaT)
+      },
+      language: {
+        "decimal": "",
+      "emptyTable": "No hay información",
+      "info": "Total _TOTAL_ registros",
+      "infoEmpty": "Total _TOTAL_ registros",
+      "infoFiltered": "(Filtrado de _MAX_ registros totales)",
+      "infoPostFix": "",
+      "thousands": ",",
+      "lengthMenu": "Mostrar _MENU_ Entradas",
+      "loadingRecords": "Cargando...",
+      "processing": "Procesando...",
+      "search": "Buscar:",
+      "zeroRecords": "Sin resultados encontrados",
+        paginate: {
+          // remove previous & next text from pagination
+          previous: '&nbsp;',
+          next: '&nbsp;'
+        }
+      }
+    });
+
+ $('#VerPedidos').removeClass('d-none');
+   $.contextMenu({
+    selector: '.modal_detail_garrafones',
+    trigger: 'hover',
+    autoHide: true,
+    build: function ($trigger, e) {
+      var title = e.currentTarget['dataset']["title"];
+      var rfeill = e.currentTarget['dataset']["rfeill"];
+      var canje = e.currentTarget['dataset']["canje"];
+     var Env = e.currentTarget['dataset']["env"] 
+     var obsequio = e.currentTarget['dataset']["obsequio"];
+     var total = e.currentTarget['dataset']["total"] 
+        return {
+            callback: function (key, options) {
+                var m = "clicked: " + key;
+            },
+            items: {
+                "Refill": { name: `Refill: ${rfeill}`,className: 'list-group-item d-flex justify-content-between align-items-center'},
+                "Canje": { name: `Canje: ${canje}`,className: 'list-group-item d-flex justify-content-between align-items-center'},
+                "Envase Nuevo": { name: `Envase Nuevo: ${Env}`,className: 'list-group-item d-flex justify-content-between align-items-center'},
+                "Total": { name: `Total: ${total}`,className: 'list-group-item d-flex justify-content-between align-items-center'},
+            }
+        };
+    }
+  });
+
+$.contextMenu({
+  selector: '.detail_monto',
+  trigger: 'hover',
+  autoHide: true,
+  build: function ($trigger, e) {
+    
+    var title = e.currentTarget['dataset']["title"];
+    var rfeill = e.currentTarget['dataset']["rfeill"];
+    var canje = e.currentTarget['dataset']["canje"];
+   var Env = e.currentTarget['dataset']["env"] 
+   var desc = e.currentTarget['dataset']["descuento"] 
+   var sindesc = e.currentTarget['dataset']["sindesc"] 
+   var condesc = e.currentTarget['dataset']["condesc"] 
+   var adeudo = e.currentTarget['dataset']["adeudo"] 
+   var obsequio = e.currentTarget['dataset']["obsequio"];
+   //var total = e.currentTarget['dataset']["total"] 
+   var total = (parseInt(sindesc) +parseInt(adeudo))-parseInt(desc)
+
+      return {
+          callback: function (key, options) {
+              var m = "clicked: " + key;
+          },
+          items: {
+              "Refill": { name: `Refill: $${rfeill}`,className: 'list-group-item d-flex justify-content-between align-items-center'},
+              "Canje": { name: `Canje: $${canje}`,className: 'list-group-item d-flex justify-content-between align-items-center'},
+              "Envase Nuevo": { name: `Envase Nuevo: $${Env}`,className: 'list-group-item d-flex justify-content-between align-items-center'},
+              "Sub-Total": { name: `Sub-Total: $${sindesc}`,className: 'list-group-item d-flex justify-content-between align-items-center'},
+              "Adeudo": { name: `Adeudo: $${adeudo}`,className: 'list-group-item d-flex justify-content-between align-items-center'},
+              "Desc.": { name: `Desc.: $${desc}`,className: 'list-group-item d-flex justify-content-between align-items-center'},
+              "Total": { name: `Total: $${total}`,className: 'list-group-item d-flex justify-content-between align-items-center'},
+          }
+      };
+  }
+});
+$.contextMenu({
+  selector: '.hover_cliente',
+  trigger: 'hover',
+  autoHide: true,
+  build: function ($trigger, e) {
+    var title = e.currentTarget['dataset']["title"];
+    var Array = e.currentTarget['dataset']["arraycliente"];
+     var my_object = JSON.parse(decodeURIComponent(Array));
+   //  $("#home_modalBody").append(txt2);
+   let asentamiento =""
+   for (let i = 0; i < codigosP_arr.length; i++) {
+   if (my_object['cpId'] == codigosP_arr[i]['id']) {
+     asentamiento = codigosP_arr[i]['asentamiento']
+   }
+   }
+      return {
+          callback: function (key, options) {
+              var m = "clicked: " + key;
+          },
+          items: {
+              "Asentamiento": { name: `Asentamiento: ${asentamiento}`,className: 'list-group-item d-flex justify-content-between align-items-center'},
+              "Coto": { name: `Coto: ${my_object['coto']}`,className: 'list-group-item d-flex justify-content-between align-items-center'},
+              "Casa": { name: `Casa: ${my_object['casa']}`,className: 'list-group-item d-flex justify-content-between align-items-center'},
+              "Tel": { name: `Tel: ${my_object['telefono']}`,className: 'list-group-item d-flex justify-content-between align-items-center'},
+          }
+      };
+  }
+});  
+}
+$('#VerPedidos').click(()=>{
+  $('#modal_pedidos').modal('show')
+})
+</script>
