@@ -1,6 +1,5 @@
 const passport = require("passport");
 const router = require("express").Router();
-const dashboardController = require("../controllers/dashboardController");
 const Sequelize = require("sequelize");
 const bcrypt = require("bcrypt-nodejs");
 const Op = Sequelize.Op;

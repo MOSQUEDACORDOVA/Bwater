@@ -4,7 +4,6 @@ const router = require('express').Router();
 const userController = require('../controllers/userController');
 const authController = require('../controllers/authController');
 const authControllerPY4 = require('../controllers/authControllerpy4');
-const dashboardController = require('../controllers/dashboardController');
 const dashboardControllerPY4 = require('../controllers/dashboardControllerPY4');
 const apiControllerPY4 = require('../controllers/apiPY4');
 const maquilaControllerPY4 = require('../controllers/maquilaControllerPY4');
