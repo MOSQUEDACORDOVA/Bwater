@@ -9,6 +9,7 @@ const request = require("request");
 var moment = require("moment-timezone");
 const { encrypt, decrypt } = require("./crypto"); //Encrypt / decrypt
 
+/* Rendering the 404 page. */
 exports.error = (req, res) => {
   let msg = false;
   if (req.query.msg) {
@@ -22,6 +23,7 @@ exports.error = (req, res) => {
       login: true
     })
 };
+/* Rendering a view. */
 exports.errorCuponera = (req, res) => {
   let msg = false;
   if (req.query.msg) {
@@ -35,6 +37,7 @@ exports.errorCuponera = (req, res) => {
     cuponeraerr: true,
     })
 };
+/* Encrypting the id_referido and sending it back to the client. */
 exports.crea_codigo_ref = (req, res) => {
   let id_referido = req.params.id_referido;
 
@@ -43,6 +46,7 @@ exports.crea_codigo_ref = (req, res) => {
   res.send({ id_referido });
 };
 
+/* The above code is changing the session variable sucursal_select to the new value of the select box. */
 exports.change_sucursal = (req, res) => {
   let nuevo_id = req.body.cambia_sucursal;
   //DATA-COMUNES
@@ -59,6 +63,7 @@ exports.change_sucursal = (req, res) => {
     });
 };
 
+/* A function that is called when a user clicks on a button. */
 exports.prestados = (req,res)=>{
   
   if (req.params.day!='Invalid date') {
@@ -124,6 +129,7 @@ exports.prestados = (req,res)=>{
                             })
 }
 
+/* Getting the data from the database and sending it to the client. */
 exports.obtener_zonas = async (req,res)=>{
 let id_sucursal = req.session.sucursal_select;
   
@@ -141,6 +147,7 @@ let id_sucursal = req.session.sucursal_select;
 let zonas =JSON.parse(await getZonas())
 res.send({zonas})
 }
+/* Getting the data from the database and sending it to the frontend. */
 exports.obtenerPedidos = async (req, res)=>{
   if (req.params.day) {
     dia = moment(req.params.day, "YYYY-DD-MM").format("YYYY-MM-DD");
@@ -181,17 +188,23 @@ exports.obtenerPedidos = async (req, res)=>{
             })
 }
 
+/*  It is a function that is called from
+the front end. */
 exports.obtenerPedidospordia = async (req, res)=>{
 let diaInicio=req.params.diainicio;
 let diaFin =req.params.diafin;    
-  ;
-   ;
          DataBase.PedidosbyDaybetween(diaInicio, diaFin)
             .then((pedidos_) => {
               let pedidos_let = JSON.parse(pedidos_);
              return res.send({pedidos_let})
             });
 }
+/* The above code is a function that is called from a route. The function is called
+obtenerPedidospordiaReportes. The function is called from a route that is defined in the file
+routes.js. The function is called from the route
+/api/pedidos/reportes/:diainicio/:diafin/:zona/:chofer. The function is called when the route is
+called with a GET request. The function is called with the parameters req and res. The function is
+called with the parameters req and res. The function is called with */
 exports.obtenerPedidospordiaReportes = async (req, res)=>{
   let diaInicio=req.params.diainicio;
   let diaFin =req.params.diafin; 
@@ -224,17 +237,21 @@ exports.obtenerPedidospordiaReportes = async (req, res)=>{
               });
     }       
   }
+  
+/* The above code is a function that is called by the client. The client sends a request to the server
+with two parameters, the start date and the end date. The server then calls the function
+PedidosbyDaybetweenVentas, which is located in the database.js file. This function returns a JSON
+object with the data requested by the client. */
 exports.obtenerPedidosVentaRango = async (req, res)=>{
   let diaInicio=req.params.diainicio;
-  let diaFin =req.params.diafin;    
-    ;
-     ;
+  let diaFin =req.params.diafin;  
            DataBase.PedidosbyDaybetweenVentas(diaInicio, diaFin)
               .then((pedidos_) => {
                 let pedidos_let = JSON.parse(pedidos_);
                 res.send({pedidos_let})
               })
   }
+/* The above code is a function that is called by the front end to get the data from the database. */
   exports.obtenerPedidosReferidoEntregado = async (req, res)=>{
     let id_=req.params.id_;
              DataBase.PedidosReferidoEntregado(id_)
@@ -243,6 +260,7 @@ exports.obtenerPedidosVentaRango = async (req, res)=>{
                   res.send({pedidos_let})
                 })
     }
+/* A function that is called by a route. */
 exports.obtenerPedidosReprogramados = async (req, res)=>{
   let dia=req.params.dia
            DataBase.PedidosbyDay(dia)
@@ -258,6 +276,8 @@ exports.obtenerPedidosReprogramados = async (req, res)=>{
               })
   }
 
+/* The above code is a route handler for a route called dashboard.  It is a
+route handler for a route called dashboard. It is a route handler for a route */
 exports.dashboard = (req, res) => {
   
   //Push.create('Hello World!')
@@ -529,6 +549,7 @@ exports.dashboard = (req, res) => {
     });
 };
 
+/* Rendering the login page. */
 exports.login = (req, res) => {
   let msg = false;
   if (req.params.msg) {
@@ -544,6 +565,7 @@ exports.login = (req, res) => {
   });
 };
 
+/* Rendering the register page. */
 exports.register = (req, res) => {
   let msg = false;
   if (req.params.msg) {
@@ -559,6 +581,7 @@ exports.register = (req, res) => {
   });
 };
 
+/* A function that is called when a user logs in. */
 exports.sesionstart = (req, res) => {
   let msg = false;
   if (req.params.msg) {
@@ -587,6 +610,7 @@ exports.sesionstart = (req, res) => {
 };
 
 //clientes
+/* The above code is a route that is called when a user clicks on a button. */
 exports.clientesPage = (req, res) => {
   let msg = false;
 
@@ -726,6 +750,7 @@ exports.clientesPage = (req, res) => {
     });
 };
 
+/* Saving a client to the database. */
 exports.save_cliente_py4 = async (req, res) => {
   let id_sucursal = req.session.sucursal_select;
   let ClientesDB = "";
@@ -835,47 +860,15 @@ exports.save_cliente_py4 = async (req, res) => {
 };
 
 
-
+/* The above code is a node.js code that is used to save the data in the database. */
 exports.save_cliente_cuponera = (req, res) => {
   const {
-    firstName,
-    cp,
-    asentamiento,
-    lastName,
-    ciudad,
-    municipio,
-    fraccionamiento,
-    coto,
-    casa,
-    calle,
-    avenida,
-    referencia,
-    telefono,
-    tipo_cliente,
-    sucursal,
-    email,
-    color,
+    firstName,cp,asentamiento,lastName,ciudad,municipio,fraccionamiento,coto,casa,calle,avenida,referencia,telefono,tipo_cliente,sucursal,email,color,
   } = req.body;
   let msg = false;
 ;
   DataBase.registrar_clienteCuponera(
-    firstName,
-    cp,
-    asentamiento,
-    lastName,
-    ciudad,
-    municipio,
-    fraccionamiento,
-    coto,
-    casa,
-    calle,
-    avenida,
-    referencia,
-    telefono,
-    tipo_cliente,
-    sucursal,
-    email,
-    color
+    firstName,cp,asentamiento,lastName,ciudad,municipio,fraccionamiento,coto,casa,calle,avenida,referencia,telefono,tipo_cliente,sucursal,email,color
   )
     .then(async (respuesta) => {
       
@@ -901,6 +894,7 @@ exports.save_cliente_cuponera = (req, res) => {
     });
 };
 
+/* The above code is deleting a client from the database. */
 exports.delete_cliente = async (req, res) => {
   const user = res.locals.user;
   let id_ = req.params.id;
@@ -950,6 +944,10 @@ if (PedidosByclient.length>0) {
         return res.redirect("/errorpy4/" + msg);
       });
 };
+/* The above code is a function that is called when a user clicks on a button. The function is called
+newEstadoCliente.
+The function is called from a button in a table. The button is in a table that is populated with
+data from a database.*/
 exports.newEstadoCliente = async (req, res) => {
   const user = res.locals.user;
   let id_ = req.params.id;
@@ -977,6 +975,12 @@ let NewEstado = JSON.parse(await DataBase.CambiarEstadoCliente(id_, estado));
       });
 };
 
+/* The above code is a function that is called when a user clicks on a button. The function is called
+editar_cliente. The function is called from a file called clientes.js. The function is called from a
+file called clientes.js. The function is called from a file called clientes.js. The function is
+called from a file called clientes.js. The function is called from a file called clientes.js. The
+function is called from a file called clientes.js. The function is called from a file called
+clientes.js. The function */
 exports.editar_cliente = (req, res) => {
   const user = res.locals.user;
   let id_ = req.body.id;
@@ -995,34 +999,10 @@ exports.editar_cliente = (req, res) => {
       return res.redirect("/errorpy4/" + msg);
     });
 };
+/* Updating a client in the database. */
 exports.save_cliente_edit = (req, res) => {
   const {
-    id_cliente,
-    cp,
-    asentamiento,
-    firstName,
-    lastName,
-    ciudad,
-    municipio,
-    coto,
-    casa,
-    calle,
-    avenida,
-    referencia,
-    telefono,
-    nombre_familiar_1,
-    apellido_familiar_1,
-    telefono_familiar_1,
-    nombre_familiar_2,
-    apellido_familiar_2,
-    telefono_familiar_2,
-    tipo_cliente,
-    cliente_nuevo,
-    fecha_ultimo_pedido,
-    utimos_botellones,
-    zona,
-    email,
-    color,descuento_edit_cliente
+    id_cliente,cp,asentamiento,firstName,lastName,ciudad,municipio,coto,casa,calle,avenida,referencia,telefono,nombre_familiar_1,apellido_familiar_1,telefono_familiar_1,nombre_familiar_2,apellido_familiar_2,telefono_familiar_2,tipo_cliente,cliente_nuevo,fecha_ultimo_pedido,utimos_botellones,zona,email,color,descuento_edit_cliente
   } = req.body;
   let msg = false;
   var modo_cliente = "SI";
@@ -1030,32 +1010,7 @@ exports.save_cliente_edit = (req, res) => {
     modo_cliente = "NO";
   }
   DataBase.update_cliente(
-    id_cliente,
-    cp,
-    asentamiento,
-    firstName,
-    lastName,
-    ciudad,
-    municipio,
-    coto,
-    casa,
-    calle,
-    avenida,
-    referencia,
-    telefono,
-    nombre_familiar_1,
-    apellido_familiar_1,
-    telefono_familiar_1,
-    nombre_familiar_2,
-    apellido_familiar_2,
-    telefono_familiar_2,
-    tipo_cliente,
-    modo_cliente,
-    fecha_ultimo_pedido,
-    utimos_botellones,
-    zona,
-    email,
-    color,descuento_edit_cliente
+    id_cliente,cp,asentamiento,firstName,lastName,ciudad,municipio,coto,casa,calle,avenida,referencia,telefono,nombre_familiar_1,apellido_familiar_1,telefono_familiar_1,nombre_familiar_2,apellido_familiar_2,telefono_familiar_2,tipo_cliente,modo_cliente,fecha_ultimo_pedido,utimos_botellones,zona,email,color,descuento_edit_cliente
   )
     .then(async (respuesta) => {
       let id_user = res.locals.user.id;
@@ -1100,6 +1055,7 @@ exports.save_cliente_edit = (req, res) => {
       return res.redirect("/errorpy4/" + msg);
     });
 };
+/* Updating the color of the tag of the client. */
 exports.save_cliente_edit_tag = async (req, res) => {
   
   const { id, color } = req.body;
@@ -1141,6 +1097,7 @@ exports.save_cliente_edit_tag = async (req, res) => {
 };
 
 //Registrar usuarios
+/* The above code is a function that is called when a user registers. */
 exports.reguserPy4 = (req, res) => {
   const { tipo, nombre, email, password, zona } = req.body;
   let msg = false;
@@ -1157,11 +1114,13 @@ exports.reguserPy4 = (req, res) => {
     });
 };
 
+/* Destroying the session. */
 exports.closeSesion = (req, res) => {
   req.session.destroy(() => {
     res.redirect("/loginpy4");
   });
 };
+/* Destroying the session. */
 exports.closeSesioncuponera = (req, res) => {
   req.session.destroy(() => {
     res.redirect("/intro_cuponera");
@@ -1169,6 +1128,7 @@ exports.closeSesioncuponera = (req, res) => {
 };
 
 //REGISTRAR PEDIDO
+/* Registering a new order in the database. */
 exports.regPedidoPy4 = async (req, res) => {
   let garrafon19L = {
     refill_cant: req.body.refill_cant_garrafon,
@@ -1378,6 +1338,7 @@ if (desc_referido > 0) {
     });
 };
 
+/* Deleting a record from the database. */
 exports.delete_pedido = (req, res) => {
   const user = res.locals.user;
   let id_ = req.params.id;
@@ -1392,6 +1353,7 @@ exports.delete_pedido = (req, res) => {
   });
 };
 
+/* A function that is called when a user clicks on a button. */
 exports.editar_pedido = (req, res) => {
   const user = res.locals.user;
 
@@ -1410,6 +1372,7 @@ exports.editar_pedido = (req, res) => {
     });
 };
 
+/* Updating a record in the database. */
 exports.Save_editPedidoPy4 = (req, res) => {
   let garrafon19L = {
     refill_cant: req.body.refill_cant_garrafon,
