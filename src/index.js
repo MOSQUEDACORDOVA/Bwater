@@ -9,8 +9,6 @@ const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const passport = require('./config/passport');
 const fileupload = require('express-fileupload');
-//var firebase = require("firebase/app");
-
 // Conectar con la base de datos
 db.sync()
  	.then(() => {
